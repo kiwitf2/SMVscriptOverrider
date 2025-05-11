@@ -36,10 +36,11 @@ public void OnMapInit()
 		if(index != -1)
 		{
 			entry.Get(index, _, _, buffer, sizeof(buffer));
-			if(StrEqual(buffer, "propkill.nut", false))
+			PrintToServer("%s", buffer);
+			if(StrEqual(buffer, "script.nut", false))
 			{
 				// Replace with the server's version of the script
-				if(FileExists("scripts/vscripts/propkill.nut", false))
+				if(FileExists("scripts/vscripts/script.nut", false))
 				{
 					DeleteFile("scripts/vscripts/_temppropkill.nut");
 					if(RenameFile("scripts/vscripts/_temppropkill.nut", "scripts/vscripts/propkill.nut"))
