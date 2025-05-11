@@ -27,6 +27,7 @@ public Plugin myinfo =
 public void OnMapInit()
 {
 	char buffer[PLATFORM_MAX_PATH];
+	char buffer2[512] = "scripts/vscripts/";
 	int length = EntityLump.Length();
 	for(int i; i < length; i++)
 	{
@@ -37,10 +38,12 @@ public void OnMapInit()
 		{
 			entry.Get(index, _, _, buffer, sizeof(buffer));
 			PrintToServer("%s", buffer);
-			if(StrEqual(buffer, "script.nut", false))
+			StrCat(buffer2, buffer);
+			PrintToServer("%s", buffer2);
+			if(StrEqual(buffer, "freakscript.nut", false))
 			{
 				// Replace with the server's version of the script
-				if(FileExists("scripts/vscripts/script.nut", false))
+				if(FileExists("scripts/vscripts/propkill.nut", false))
 				{
 					DeleteFile("scripts/vscripts/_temppropkill.nut");
 					if(RenameFile("scripts/vscripts/_temppropkill.nut", "scripts/vscripts/propkill.nut"))
