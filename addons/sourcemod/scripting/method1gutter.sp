@@ -20,14 +20,19 @@ public Plugin myinfo =
 	version		=	PLUGIN_VERSION
 }
 
-// public void OnPluginStart()
-// {
-// }
+public void OnPluginStart()
+{
+	if (DirExists("scripts/vscripts/sm_vs_overrides/", false) == false)
+	{
+		CreateDirectory("scripts/vscripts/sm_vs_overrides/", 511);
+	}
+}
 
 public void OnMapInit()
 {
-	char buffer[PLATFORM_MAX_PATH];
-	char buffer2[512] = "scripts/vscripts/";
+	char scriptfile[PLATFORM_MAX_PATH];
+	char fullpath_buffer[512] = "scripts/vscripts/sm_vs_overrides/";
+	char replacefile_buffer[512] = "sm_vs_overrides/";
 	int length = EntityLump.Length();
 	for(int i; i < length; i++)
 	{
@@ -36,26 +41,20 @@ public void OnMapInit()
 		int index = entry.FindKey("vscripts");
 		if(index != -1)
 		{
-			entry.Get(index, _, _, buffer, sizeof(buffer));
-			PrintToServer("%s", buffer);
-			StrCat(buffer2, buffer);
-			PrintToServer("%s", buffer2);
-			if(StrEqual(buffer, "freakscript.nut", false))
+			entry.Get(index, _, _, scriptfile, sizeof(scriptfile));
+			PrintToServer("%s", scriptfile);
+			StrCat(fullpath_buffer,PLATFORM_MAX_PATH,scriptfile);
+			StrCat(replacefile_buffer,PLATFORM_MAX_PATH,scriptfile);
+			PrintToServer("%s", fullpath_buffer);
+			// Replace with the server's version of the script
+			if(FileExists(fullpath_buffer, false))
 			{
-				// Replace with the server's version of the script
-				if(FileExists("scripts/vscripts/propkill.nut", false))
-				{
-					DeleteFile("scripts/vscripts/_temppropkill.nut");
-					if(RenameFile("scripts/vscripts/_temppropkill.nut", "scripts/vscripts/propkill.nut"))
-					{
-						entry.Update(index, NULL_STRING, "_temppropkill.nut");
-						i = length;
-					}
-					else
-					{
-						LogError("Could not access scripts/vscripts/propkill.nut");
-					}
-				}
+					entry.Update(index, NULL_STRING, replacefile_buffer);
+					i = length;
+			}
+			else
+			{
+				LogMessage("File %s was not found, not overriding", fullpath_buffer);
 			}
 		}
 
@@ -68,29 +67,21 @@ public void OnMapInit()
 
 // }
 
-public void OnMapEnd()
-{
-	if(FileExists("scripts/vscripts/_temppropkill.nut", false))
-	{
-		RenameFile("scripts/vscripts/propkill.nut", "scripts/vscripts/_temppropkill.nut");
-	}
-}
+// void CallScriptFunction(const char[] name)
+// {
+// 	char buffer[64];
 
-void CallScriptFunction(const char[] name)
-{
-	char buffer[64];
+// 	int entity = -1;
+// 	while((entity=FindEntityByClassname(entity, "*")) != -1)
+// 	{
+// 		GetEntPropString(entity, Prop_Data, "m_iszVScripts", buffer, sizeof(buffer));
+// 		if(StrEqual(buffer, "propkill.nut") || StrEqual(buffer, "_temppropkill.nut"))
+// 		{
+// 			SetVariantString(name);
+// 			AcceptEntityInput(entity, "CallScriptFunction", entity, entity);
+// 			return;
+// 		}
+// 	}
 
-	int entity = -1;
-	while((entity=FindEntityByClassname(entity, "*")) != -1)
-	{
-		GetEntPropString(entity, Prop_Data, "m_iszVScripts", buffer, sizeof(buffer));
-		if(StrEqual(buffer, "propkill.nut") || StrEqual(buffer, "_temppropkill.nut"))
-		{
-			SetVariantString(name);
-			AcceptEntityInput(entity, "CallScriptFunction", entity, entity);
-			return;
-		}
-	}
-
-	LogError("Could not find VScript hosted entity");
-}
+// 	LogError("Could not find VScript hosted entity");
+// }
