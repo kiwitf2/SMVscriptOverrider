@@ -1,4 +1,4 @@
-# TF2/SDK-2013 Vscript Gutter
+# TF2/SDK-2013 Vscript File Overrider
 Tool that allows servers to override packed vscript files with the server's ones
 
 # USAGE
